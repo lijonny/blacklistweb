@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$USER_HOME$/Application Data/.idea/Application Data.iml" filepath="$USER_HOME$/Application Data/.idea/Application Data.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/blacklistweb.iml" filepath="$PROJECT_DIR$/.idea/blacklistweb.iml" />
+      <module fileurl="file://C:\Users\7\PycharmProjects\blacklistweb\.idea\blacklistweb.iml" filepath="C:\Users\7\PycharmProjects\blacklistweb\.idea\blacklistweb.iml" />
+      <module fileurl="file://$USER_HOME$/PycharmProjects/webCrawler/.idea/webCrawler.iml" filepath="$USER_HOME$/PycharmProjects/webCrawler/.idea/webCrawler.iml" />
+    </modules>
+  </component>
+</project>

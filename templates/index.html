@@ -1,0 +1,120 @@
+{% from 'macro.html' import form_tag,render_field,render_input,render_tab_for %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>add</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css') }}">
+</head>
+<body>
+<div id="content" class="">
+<div class="col-md-9">
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {{ render_tab_for('blacklist',['id','idcard','name','mac','imsi','imei','passport','操作'],blacklist,'del.blacklist') }}
+    {{ render_tab_for('三所',['id','idcard','操作'],idcards,'del.suo3') }}
+    {{ render_tab_for('person',['idcard','name','sex','birthday','nationality','nation','address','passport_type','passport_id','score','image','操作'],person,'del.person') }}
+    {{ render_tab_for('helu',['id','idcard','操作'],helu,'del.helu') }}
+    {{ render_tab_for('jcz',['id','idcard','操作'],jcz,'del.jcz') }}
+    {{ render_tab_for('idlist',['idcard','name','img','操作'],idlist,'del.idlist') }}
+
+</div>
+<div class="col-md-3">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4>blacklist</h4>
+        </div>
+        <div class="panel-body">
+        {% call form_tag('add.blacklist') %}
+            {{ render_field(blacklform.idcard) }}
+            {{ render_field(blacklform.name) }}
+            {{ render_field(blacklform.mac) }}
+            {{ render_field(blacklform.imsi) }}
+            {{ render_field(blacklform.imei) }}
+            {{ render_field(blacklform.passport) }}
+            {{ render_input() }}
+        {% endcall %}
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4>三所</h4>
+        </div>
+        <div class="panel-body">
+        {% call form_tag('add.suo3') %}
+            {{ suoforms.hidden_tag() }}
+            {{ render_field(suoforms.idcard) }}
+            {{ render_input() }}
+        {% endcall %}
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4>person</h4>
+        </div>
+        <div class="panel-body">
+        {% call form_tag('add.person') %}
+            {{ personform.hidden_tag() }}
+            {{ render_field(personform.idcard) }}
+            {{ render_field(personform.name) }}
+            {{ render_field(personform.sex) }}
+            {{ render_field(personform.birthday) }}
+            {{ render_field(personform.nationality) }}
+            {{ render_field(personform.nation) }}
+            {{ render_field(personform.address) }}
+            {{ render_field(personform.passport_type) }}
+            {{ render_field(personform.passport_id) }}
+            {{ render_field(personform.score) }}
+            {{ render_field(personform.image) }}
+            {{ render_input() }}
+        {% endcall %}
+    {#    {{ render_table('person',['idcard','name','sex','birthday','nationality','nation','address','passport_type','passport_id','score','image'],person) }}#}
+
+        </div>
+
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4>helu</h4>
+        </div>
+        <div class="panel-body">
+        {% call form_tag('add.helu') %}
+            {{ suoforms.hidden_tag() }}
+            {{ render_field(suoforms.idcard) }}
+            {{ render_input() }}
+        {% endcall %}
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4>jcz</h4>
+        </div>
+        <div class="panel-body">
+        {% call form_tag('add.jcz') %}
+            {{ suoforms.hidden_tag() }}
+            {{ render_field(suoforms.idcard) }}
+            {{ render_input() }}
+        {% endcall %}
+        </div>
+    </div>
+        <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4>idlist</h4>
+        </div>
+        <div class="panel-body">
+        {% call form_tag('add.idlist') %}
+            {{ idlistform.hidden_tag() }}
+            {{ render_field(idlistform.idcard) }}
+            {{ render_field(idlistform.name) }}
+            {{ render_field(idlistform.img) }}
+            {{ render_input() }}
+        {% endcall %}
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

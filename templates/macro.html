@@ -1,0 +1,81 @@
+{%- macro form_tag(endpoint,method='post') -%}
+    <form class="form-horizontal" role="form" action="{{ url_for(endpoint,**kwargs) }}" method="{{ method }}">
+        {{ caller() }}
+    </form>
+{%- endmacro -%}
+
+{% macro render_field(field) %}
+    <div class="form-group">
+        <label class="col-sm-3 control-label">{{ field.label }}</label>
+        {{ field(**kwargs)|safe }}
+        <div>
+            {% if field.errors %}
+                <ul class="errors">
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+{% macro render_table(title,heads,blacklist) %}
+<table class="table table-hover">
+        <caption>{{ title }}</caption>
+        <thead>
+            <tr>
+                {% for item in heads %}
+                <th>{{ item }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in blacklist %}
+            <tr>
+                {% for i in item %}
+                    <td>{{ i }}</td>
+                {% endfor %}
+                <td>
+                    <input class="btn btn-default" type="submit" value="删除">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+{% macro render_tab_for(title,heads,lists,endpoint,method='post') %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4>{{ title }}</h4>
+        </div>
+        <div class="panel-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    {% for item in heads %}
+                    <th>{{ item }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in lists %}
+                <tr>
+                    {% for i in item %}
+                        <td>{{ i }}</td>
+                    {% endfor %}
+                    <td>
+                        <form class="form-horizontal" role="form" action="{{ url_for(endpoint,**kwargs) }}" method="{{ method }}">
+                            <input type="hidden" name="id" value="{{ item[0] }}" >
+                            <input class="btn btn-default" type="submit" value="删除">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+{% endmacro %}
+{% macro render_input() %}
+    <input class="btn btn-primary" type="submit" value="添加">
+{% endmacro %}
