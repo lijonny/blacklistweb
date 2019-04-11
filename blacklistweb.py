@@ -12,6 +12,7 @@ from gevent import monkey
 from blue_add import bp as addbp
 from blue_del import bp as delbp
 import logging
+import hashlib
 vacationlist = ['410181198905081535','22028219931203411XTTT','61032319911025001','430681198309180335','G31035926']
 inBlackListData = {"status":"0","message":"success","jobId":"CC0000005963AD750159721904E33780","isBlackList":1}
 outBlackListData = {"status":"0","message":"success","jobId":"CC0000005963AD750159721904E33780","isBlackList":0}
@@ -42,7 +43,7 @@ def teardown_request(exception):
 
 
 
-@app.route('/3suo/', methods=['GET', 'POST'])
+#@app.route('/3suo/', methods=['GET', 'POST'])
 def template3suo():
     if request.method == 'POST':
 #        time.sleep(5)
@@ -102,6 +103,101 @@ def template3hui():
         #return str(datalist)
     else:
         return "200 OK"
+
+@app.route('/getMergeBlockInfo.do',methods=['GET','POST'])
+def getMergeBlockInfo():
+    if request.method =='POST':
+        print(request.args)
+        print(request.form)
+        key =request.form.get('key',None)
+        sign = request.form.get('sign',None)
+        message = request.form.get('message',None)
+        timestamp = request.form.get('timestamp',None)
+        m = hashlib.md5()
+        m.update(str(str(key) + str(timestamp)).encode('utf-8'))
+        key_time_md5 = m.hexdigest()
+        if key is None or sign is None or message is None or timestamp is None :
+            return '''{"code": 1005,"msg": "key,sign,message,tiemstamp parmeters are to be required field"}'''
+        elif key_time_md5 !=str(sign):
+            return '''{"code":1006,"msg":"md5 verify failed"}'''
+        try:
+            message = json.loads(message,encoding='utf-8')
+            keys = message.keys()
+            if 'type' not in keys:
+                return '''{"code":1005,"msg":"type is to be required field"}'''
+            elif 'data' not in keys:
+                return '''{"code":1005,"msg":"data is to be required field"}'''
+            else:
+                type_values = message['type']
+                if int(type_values) == 1 or int(type_values) == 2:
+                    data_values = message['data']
+
+                    if type(data_values) is not list:
+                        return '''{"code":1005,"msg":"data is to be required field"}'''
+                    else:
+                        data_keys =['uuid', 'sfzh', 'passtime', 'devicecode', 'location', 'local_url', 'areacode', 'longitude',
+                         'latitude', 'similar_degree', 'jczbh', 'sblx']
+                        for key in data_keys:
+                            if key not in data_values[0].keys():
+                                return '''{"code":1005,"msg":"%s is to be required field"}'''%key
+
+
+
+                        try:
+                            id = data_values[0]['sfzh']
+                            print(id)
+                            from_idcard = g.db.execute("select idcard from blacklist where idcard= '%s'"%id)
+
+                            if from_idcard.fetchone() is not None:
+                                id_result = g.db.execute("select idcard,name,address from person where idcard='%s'"%id)
+                                #print(type(id_result.fetchone()))
+                                result= id_result.fetchone()
+                                result_dict = {'type':'01','retcode':'1','msg':'比对成功！','data':[]}
+                                data_json={'uuid':data_values[0]['uuid'],'flag':'1','sfzh':id,'name':result[1],'hjdz':result[2],
+                                           'jczbh':'0011','yjflag':1,'local_url':'http://test/test.jpg','datatime':time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())}
+                                result_dict['data'].append(data_json)
+                                return json.dumps(result_dict,ensure_ascii=False)
+                            else:
+                                result_dict = {'type': '01', 'retcode': '1', 'msg': '比对失败！', 'data': []}
+                                data_json = {'uuid': data_values[0]['uuid'], 'flag': '0', 'sfzh': id,
+                                             'jczbh': '0011', 'yjflag': 0, 'local_url': 'http://test/test.jpg',
+                                             'datatime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}
+                                result_dict['data'].append(data_json)
+                                return json.dumps(result_dict, ensure_ascii=False)
+                        except TypeError:
+                            return '''{"code":1005,"msg":"idcard is to be required field"}'''
+                else:
+                    return '''{"code":1006,"msg":"type is verify failed"}'''
+        except json.decoder.JSONDecodeError:
+            return '''{"code":1007,"msg":"message is not a json"}'''
+    else:
+        abort(404)
+
+@app.route('/getBlockScenePhotos.do',methods=['GET','POST'])
+def getBlockScenePhotos():
+    if request.method =='POST':
+        key = request.form.get('key')
+        sign = request.form.get('sign')
+        message = request.form.get('message')
+        timestamp = request.form.get('timestamp')
+        m = hashlib.md5()
+        m.update(str(key + timestamp).encode('utf-8'))
+        key_time_md5 = m.hexdigest()
+        if key is None or sign is None or message is None or timestamp is None:
+            return '''{"code": 1005,"msg": "key,sign,message,tiemstamp parmeters are to be required field"}'''
+        elif key_time_md5 != str(sign):
+            return '''{"code":1006,"msg":"md5 verify failed"}'''
+        try:
+            message =json.loads(message,encoding='utf-8')
+            data = message['data'][0]
+            print(data,type(data))
+            result ={"retcode":"1","msg":"补传成功!"}
+            return json.dumps(result,ensure_ascii=False)
+        except json.decoder.JSONDecodeError:
+            return '''{"code":1007,"msg":"message is not a json"}'''
+    else:
+        abort(404)
+
 
 @app.route('/helu',methods=['GET', 'POST'])
 def templatehelu():

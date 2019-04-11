@@ -2,11 +2,11 @@
 from setuptools import setup
 setup(
     name='blacklistweb',
-    version='1.0.0.bata',
+    version='1.10.0.bata',
     description='testing for 3d_infoportal',
     url='testurl',
     author='Jonny Lee',
-    author_email='857260616@163.com',
+    author_email='857260616@qq.com',
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
